@@ -210,6 +210,10 @@ ifneq ($(DOCKER_SERVICES_OVERRIDE),true)
       TEMP_DOCKER_SERVICES:=$(TEMP_DOCKER_SERVICES) elasticsearch
 	endif
   endif
+  # Add Elasticsearch-TE for Team Edition
+  ifeq (,$(findstring elasticsearch-te,$(ENABLED_DOCKER_SERVICES)))
+    TEMP_DOCKER_SERVICES:=$(TEMP_DOCKER_SERVICES) elasticsearch-te
+  endif
   ENABLED_DOCKER_SERVICES:=$(ENABLED_DOCKER_SERVICES) $(TEMP_DOCKER_SERVICES)
 endif
 

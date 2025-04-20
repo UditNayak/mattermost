@@ -60,6 +60,14 @@ services:
     extends:
         file: build/docker-compose.common.yml
         service: elasticsearch
+  elasticsearch-te: # Team Edition (open-source edition)
+    restart: 'no'
+    container_name: mattermost-elasticsearch-te
+    ports:
+      - "9202:9202"
+    extends:
+      file: build/docker-compose.common.yml
+      service: elasticsearch-te
   opensearch:
     container_name: mattermost-opensearch
     ports:

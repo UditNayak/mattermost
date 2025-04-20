@@ -101,6 +101,21 @@ services:
       xpack.security.enabled: "false"
       action.destructive_requires_name: "false"
       ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+  elasticsearch-te:  # Team Edition (open-source edition)
+    image: "mattermostdevelopment/mattermost-elasticsearch:8.9.0"
+    networks:
+      - mm-test
+    environment:
+      http.host: "0.0.0.0"
+      http.port: 9202 # changed the port to 9202 to avoid conflicts with the existing Elasticsearch (9200) and OpenSearch (9201) services.
+      http.cors.enabled: "true"
+      http.cors.allow-origin: "http://localhost:1358,http://127.0.0.1:1358"
+      http.cors.allow-headers: "X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization"
+      http.cors.allow-credentials: "true"
+      transport.host: "127.0.0.1"
+      xpack.security.enabled: "false"
+      action.destructive_requires_name: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
   opensearch:
     build:
       context: .
