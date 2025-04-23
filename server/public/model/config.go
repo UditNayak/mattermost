@@ -212,6 +212,7 @@ const (
 	ElasticsearchSettingsDefaultRequestTimeoutSeconds       = 30
 	ElasticsearchSettingsDefaultBatchSize                   = 10000
 	ElasticsearchSettingsESBackend                          = "elasticsearch"
+	 ElasticsearchSettingsTEBackend 						= "elasticsearch-te"
 	ElasticsearchSettingsOSBackend                          = "opensearch"
 
 	BleveSettingsDefaultIndexDir  = ""
@@ -2929,6 +2930,30 @@ type ElasticsearchSettings struct {
 	IgnoredPurgeIndexes           *string `access:"environment_elasticsearch,write_restrictable,cloud_restrictable"` // telemetry: none
 }
 
+type ElasticsearchTESettings struct {
+    EnableIndexing *bool `access:"experimental,write_restrictable"`
+    EnableSearching *bool `access:"experimental,write_restrictable"`
+    EnableAutocomplete *bool `access:"experimental,write_restrictable"`
+    Sniff *bool `access:"experimental,write_restrictable"`
+    ConnectionURL *string `access:"experimental,write_restrictable"`
+    Username *string `access:"experimental,write_restrictable"`
+    Password *string `access:"experimental,write_restrictable"`
+    IndexPrefix *string `access:"experimental,write_restrictable"`
+    LiveIndexingBatchSize *int `access:"experimental,write_restrictable"`
+    BatchSize *int `access:"experimental,write_restrictable"`
+    RequestTimeoutSeconds *int `access:"experimental,write_restrictable"`
+    SkipTLSVerification *bool `access:"experimental,write_restrictable"`
+    Trace *string `access:"experimental,write_restrictable"`
+    IgnoredPurgeIndexes *string `access:"experimental,write_restrictable"`
+    AggregatePostsAfterDays *int `access:"experimental,write_restrictable"`
+    PostsAggregatorJobStartTime *string `access:"experimental,write_restrictable"`
+    IndexDeletionAge *int `access:"experimental,write_restrictable"`
+    CA *string `access:"experimental,write_restrictable"`
+    ClientCert *string `access:"experimental,write_restrictable"`
+    ClientKey *string `access:"experimental,write_restrictable"`
+}
+
+
 func (s *ElasticsearchSettings) SetDefaults() {
 	if s.ConnectionURL == nil {
 		s.ConnectionURL = NewPointer(ElasticsearchSettingsDefaultConnectionURL)
@@ -3037,6 +3062,88 @@ func (s *ElasticsearchSettings) SetDefaults() {
 	if s.IgnoredPurgeIndexes == nil {
 		s.IgnoredPurgeIndexes = NewPointer("")
 	}
+}
+
+func (s *ElasticsearchTESettings) SetDefaults() {
+    if s.EnableIndexing == nil {
+        s.EnableIndexing = NewBool(false)
+    }
+
+    if s.EnableSearching == nil {
+        s.EnableSearching = NewBool(false)
+    }
+
+    if s.EnableAutocomplete == nil {
+        s.EnableAutocomplete = NewBool(false)
+    }
+
+    if s.ConnectionURL == nil {
+        s.ConnectionURL = NewString("http://localhost:9202")
+    }
+
+    if s.Username == nil {
+        s.Username = NewString("")
+    }
+
+    if s.Password == nil {
+        s.Password = NewString("")
+    }
+
+    if s.Sniff == nil {
+        s.Sniff = NewBool(true)
+    }
+
+    if s.IndexPrefix == nil {
+        s.IndexPrefix = NewString("mattermost_te_")
+    }
+
+    if s.LiveIndexingBatchSize == nil {
+        s.LiveIndexingBatchSize = NewInt(1)
+    }
+
+    if s.BatchSize == nil {
+        s.BatchSize = NewInt(10000)
+    }
+
+    if s.RequestTimeoutSeconds == nil {
+        s.RequestTimeoutSeconds = NewInt(30)
+    }
+
+    if s.SkipTLSVerification == nil {
+        s.SkipTLSVerification = NewBool(false)
+    }
+
+    if s.Trace == nil {
+        s.Trace = NewString("")
+    }
+
+    if s.IgnoredPurgeIndexes == nil {
+        s.IgnoredPurgeIndexes = NewString("")
+    }
+
+    if s.AggregatePostsAfterDays == nil {
+        s.AggregatePostsAfterDays = NewInt(365)
+    }
+
+    if s.PostsAggregatorJobStartTime == nil {
+        s.PostsAggregatorJobStartTime = NewString("03:00")
+    }
+
+    if s.IndexDeletionAge == nil {
+        s.IndexDeletionAge = NewInt(365)
+    }
+
+    if s.CA == nil {
+        s.CA = NewString("")
+    }
+
+    if s.ClientCert == nil {
+        s.ClientCert = NewString("")
+    }
+
+    if s.ClientKey == nil {
+        s.ClientKey = NewString("")
+    }
 }
 
 type BleveSettings struct {
@@ -4675,6 +4782,12 @@ func (o *Config) Sanitize(pluginManifests []*Manifest) {
 	}
 
 	o.PluginSettings.Sanitize(pluginManifests)
+}
+
+func (s *ElasticsearchTESettings) Sanitize() {
+    if s.Password != nil {
+        *s.Password = FAKE_SETTING
+    }
 }
 
 type FilterTag struct {
